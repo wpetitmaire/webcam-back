@@ -1,0 +1,19 @@
+{
+  "name": "webcam-back",
+  "version": "1.0.0",
+  "description": "API rest webcam",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wpetitmaire/webcam-back.git"
+  },
+  "author": "WillyPM",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wpetitmaire/webcam-back/issues"
+  },
+  "homepage": "https://github.com/wpetitmaire/webcam-back#readme"
+}
