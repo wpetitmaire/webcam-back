@@ -4,7 +4,9 @@
   "description": "API rest webcam",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "watch-ts": "tsc -w",
+    "start-server": "nodemon dist/app.js",
+    "start": "npx concurrently \"npm:watch-ts\" \"npm:start-server\""
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,8 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.9",
+    "@types/node": "^14.14.10",
+    "concurrently": "^5.3.0",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.6"
   }
