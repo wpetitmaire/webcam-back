@@ -1,24 +1,32 @@
-import { Archive } from './archive'
+import { Archive } from './archive';
+import moment from 'moment';
 
 import fs from 'fs-extra';
 
 class ArchiveManager {
 
     private startPath: string;
+    private debugMode: boolean;
+    private date: moment.Moment;
 
     constructor(parameters: Archive.initConfiguration) {
         this.startPath = parameters.startPath;
+        this.debugMode = parameters.debugMode || false;
+        this.date = parameters.date;
     };
 
     log(message: string): void {
+
+        if(!this.debugMode)
+            return;
+             
         console.log(`(archiveManager) - ${message}`);
     }
- 
-
+  
     /**
      * Renvoie la description des éléments présents dans le dossier
      */
-    getFilesDescription(): any /*Promise<Archive.fileDescription[]>*/ {
+    getFilesDescription(): Promise<Archive.fileDescription[]> {
         this.log(`getFilesDescription : ${this.startPath}`);
 
         // Création d'une promesse qui effectue toutes les recherches
@@ -66,18 +74,13 @@ class ArchiveManager {
                                 // On ressoud la promesse avec le contenu de l'objet fraichement créé.
                                 sucess(data);
                             });
-
                         }))
-
                     })
 
                     // On ressoud toutes les promesses crées lors du parcourt des fichiers et on retourne le résultat à la promesse de départ.
                     sucess(Promise.all(promises))
-
                 })) 
-
             })
-
         }); 
     };
 }
