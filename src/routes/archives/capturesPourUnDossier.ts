@@ -11,7 +11,8 @@ import { Archive } from './../../components/archives/archive';
 module.exports = (app: express.Application) => {
     app.get('/api/archives/:date', (req: express.Request, res: express.Response) => {
  
-        const date = moment(req.params.date, 'DD-MM-YYYY');  
+        const date = moment(req.params.date, 'DD-MM-YYYY');      
+        console.log(date.get('year'), date.get('month'), date.get('date'))    
 
         // La date est obligatoire
         if(!date.isValid()) {
@@ -31,7 +32,10 @@ module.exports = (app: express.Application) => {
                 data: retour
             };
             res.json(response); 
-        }) 
+        }).catch(erreur => {
+            console.log(erreur);
+            res.status(500).json({ message: erreur })
+        });
     
     });
 }; 
