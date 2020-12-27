@@ -1,6 +1,5 @@
 import express from 'express';
 import moment from 'moment';
-import { type } from 'os';
 import { ArchiveManager } from '../../components/archives/archiveManager';
 import { apiResponse } from '../routes';
 import { Archive } from './../../components/archives/archive';

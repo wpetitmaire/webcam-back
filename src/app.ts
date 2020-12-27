@@ -1,11 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
 
 app
+    .use(cors())
     .use(morgan('dev'))
     .use(bodyParser.json());
 
