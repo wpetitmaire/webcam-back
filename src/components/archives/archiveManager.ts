@@ -87,7 +87,7 @@ class ArchiveManager {
                 
                                         // On créer l'objet avec les caractéristiques du fichier
                                         const data: Archive.fileDescription = {
-                                            name: file,
+                                            name: stats.isFile() == true ? `${file.substring(0,2)}:${file.substring(2,4)}:${file.substring(4,6)}` : file,
                                             isFile: stats.isFile(),
                                             date: stats.birthtime
                                         };
@@ -106,6 +106,8 @@ class ArchiveManager {
 
             }) 
     };
+
+
 }
 
 export {ArchiveManager};
