@@ -7,7 +7,7 @@ class ArchiveManager {
 
     private startPath: string;
     private debugMode: boolean;
-    private date: moment.Moment;
+    private date: moment.Moment | any;
 
     constructor(parameters: Archive.initConfiguration) {
         this.startPath = parameters.startPath;
@@ -29,24 +29,30 @@ class ArchiveManager {
     getFilesDescription(): Promise<Archive.fileDescription[]> {
         this.log(`getFilesDescription : ${this.startPath}`);
  
-        const year = this.date.year();
-        const month = this.date.month() + 1; 
-        const day = this.date.date(); 
+        let pathToSearch = '';
 
-        const pathToSearch = `${this.startPath}/${year}/${month}/${day}/`;
+        if(moment.isMoment(this.date)) {
+
+            const year = this.date.year();
+            const month = this.date.month() + 1; 
+            const day = this.date.date(); 
+            pathToSearch = `${this.startPath}/${year}/${month}/${day}/`;
+        }
+        else
+            pathToSearch = this.startPath;
+
 
         // Création d'une promesse qui effectue toutes les recherches
         return new Promise((sucess, fail) => {
 
             // Tester l'existence de l'arborescence 
-            console.log('--> TEST EXISTENCE') 
+            // console.log('--> TEST EXISTENCE') 
             fs.pathExists(pathToSearch).then(exists => { 
 
                 // On rompt la promesse si l'arboresence n'existe pas
                 if(!exists) {
 
-                    console.log('ICI') 
-                    fail(`Aucune archives trouvée pour la date : ${day}/${month}/${year}`);
+                    fail(`Aucun élément trouvé pour le dossier ${pathToSearch}`);
                     return;
                 }
 
@@ -58,7 +64,7 @@ class ArchiveManager {
                             fail(err);
                             return;
                         }
-
+ 
                         // Exlusion des éléments indésirables
                         files = files.filter(file => !excludedNames.includes(file)); 
                         

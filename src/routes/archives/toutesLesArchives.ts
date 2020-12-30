@@ -8,24 +8,11 @@ import { Archive } from './../../components/archives/archive';
  * Récupération de la liste des captures
  */
 module.exports = (app: express.Application) => {
-    app.get('/api/archives/:date', (req: express.Request, res: express.Response) => {
+    app.get('/api/archives', (req: express.Request, res: express.Response) => {
 
-        console.log('LA') 
+        console.log('ICI') 
  
-        const date = moment(req.params.date, 'DD-MM-YYYY');      
-        console.log(date.get('year'), date.get('month'), date.get('date'))    
-
-        // La date est obligatoire
-        if(!date.isValid()) {
-
-            const response: apiResponse = {
-                message: `Renseigner une date valide. Exemple : 20-12-2019`,
-                data: []
-            };
-            res.status(400).json(response);
-        }
-
-        const archiveManager = new ArchiveManager({ startPath: './../test_snaps/', date: date });
+        const archiveManager = new ArchiveManager({ startPath: './../test_snaps/' });
         archiveManager.getFilesDescription().then((retour: Archive.fileDescription[]) => {
  
             const response: apiResponse = {
@@ -36,7 +23,7 @@ module.exports = (app: express.Application) => {
         }).catch(erreur => {
             console.log(erreur);
             res.status(500).json({ message: erreur })
-        });
+        }); 
     
     });
 }; 

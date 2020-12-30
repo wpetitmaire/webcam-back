@@ -6,7 +6,7 @@ export namespace Archive {
     interface initConfiguration {
         startPath: string;
         debugMode?: boolean;
-        date: moment.Moment
+        date?: moment.Moment
     }
 
     interface fileDescription {

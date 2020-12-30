@@ -13,5 +13,6 @@ app
 
 // Ici nous placerons nos futurs points de terminaison.
 require('./routes/archives/capturesPourUnDossier')(app);
+require('./routes/archives/toutesLesArchives')(app); 
 
 app.listen(port, () => console.log(`Notre application Node est démarrée sur : http://localhost:${port}`)); 
