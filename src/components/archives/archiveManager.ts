@@ -4,31 +4,32 @@ import fs from 'fs-extra';
 import { type } from 'os';
 
 const excludedNames = ['.DS_Store', 'lastsnap.jpg'];
-const enum typesOfSearching {
-    all,
-    year,
-    month,
-    day
-}
+const enum typesOfSearching { all, year, month, day };
 class ArchiveManager {
 
-    private readonly startPath = './../test_snaps/';
-    private debugMode = false; 
-    private date: moment.Moment | undefined;
-    private year!: number | undefined;
+    private readonly startPath = './../test_snaps';
+    private debugMode = true; 
     private startPoint = typesOfSearching.all;
+    private year!: number | undefined;
+    private month!: number | undefined;
+    private day!: number | undefined;
 
     constructor(parameters?: Archive.initConfiguration) {
+
+        this.log("-->CONSTRUCTEUR")
         
         if(!parameters)
             return;
 
         this.debugMode = parameters.debugMode || false;
-        this.date = parameters.date;
         this.year = parameters.year;
+        this.month = parameters.month;
+        this.day = parameters.day;
 
-        if(this.date)
+        if(this.year && this.month && this.day)
             this.startPoint = typesOfSearching.day;
+        else if(this.year && this.month)
+            this.startPoint = typesOfSearching.month;
         else if(this.year)
             this.startPoint = typesOfSearching.year;
     };
@@ -45,29 +46,41 @@ class ArchiveManager {
      * Construit le chemin ou récupérer les éléments des archives
      */
     private getPathToSearch(): string {
+        this.log("getPathToSearch")
 
         switch(this.startPoint) {
 
             case typesOfSearching.all:
-                return this.startPath;
+                return `${this.startPath}/`;
 
             case typesOfSearching.day:
 
-                if(this.date) {
+                if(this.year && this.month && this.day) {
 
-                    const year = this.date.year();
-                    const month = this.date.month() + 1; 
-                    const day = this.date.date(); 
-                    return `${this.startPath}/${year}/${month}/${day}/`; 
+                    let day = (this.day < 10) ? `0${this.day}` : `${this.day}`;
+                    let month = (this.month < 10) ? `0${this.month}` : `${this.month}`;
+
+                    return `${this.startPath}/${this.year}/${month}/${day}/`;
                 }
 
             case typesOfSearching.year:
                 if(this.year)
                     return `${this.startPath}/${this.year}/`; 
 
+            case typesOfSearching.month:
+                
+                if(this.year && this.month) {
+
+                    let month = (this.month < 10) ? `0${this.month}` : `${this.month}`;
+                    return `${this.startPath}/${this.year}/${month}/`;
+                }
+                break;
+
             default:
                 return '';
         }
+
+        return '';
     }
   
     /**
@@ -77,6 +90,8 @@ class ArchiveManager {
         this.log(`getFilesDescription : ${this.startPath}`);
  
         let pathToSearch = this.getPathToSearch();
+
+        console.log(pathToSearch)
 
         // Création d'une promesse qui effectue toutes les recherches
         return new Promise((sucess, fail) => {

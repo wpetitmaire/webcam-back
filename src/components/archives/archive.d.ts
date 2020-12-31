@@ -7,6 +7,8 @@ export namespace Archive {
         debugMode?: boolean | false,
         date?: moment.Moment,
         year?: number,
+        month?: number,
+        day?: number,
     }
 
     // interface initConfigurationWithYear {

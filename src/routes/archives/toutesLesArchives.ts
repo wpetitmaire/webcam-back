@@ -12,17 +12,33 @@ module.exports = (app: express.Application) => {
 
         // Filtre sur l'année
         if(req.query.year) {
-            const year = parseInt(<string>req.query.year);
-            const archiveManager = new ArchiveManager({ year });
+
+            const apiParams: Archive.initConfiguration = {
+                year: parseInt(<string>req.query.year),
+                month: (req.query.month) ? parseInt(<string>req.query.month) : undefined,
+                day: (req.query.day) ? parseInt(<string>req.query.day) : undefined,
+            }
+
+            console.log(apiParams)
+
+            const archiveManager = new ArchiveManager(apiParams);
             archiveManager.getFilesDescription().then((retour: Archive.fileDescription[]) => {
      
+                let message = '';
+
+                if(req.query.year && !req.query.month && !req.query.day)
+                    message = `${retour.length} dossier(s) ont été trouvé pour l'année ${req.query.year}.`;
+                else if(req.query.year && req.query.month && !req.query.day)
+                    message = `${retour.length} dossier(s) ont été trouvé pour l'année ${req.query.year} et le mois ${req.query.month}`;
+                else if(req.query.year && req.query.month && !req.query.day)
+                    message = `${retour.length} dossier(s) ont été trouvé pour l'année ${req.query.year}, le mois ${req.query.month} et le jour ${req.query.day}.`;
+
                 const response: apiResponse = {
-                    message: `${retour.length} dossier(s) ont été trouvé pour l'année ${year}.`, 
+                    message: message, 
                     data: retour
                 };
                 res.json(response); 
             }).catch(erreur => { 
-                console.log(erreur);
                 res.status(500).json({ message: erreur })
             }); 
         }
