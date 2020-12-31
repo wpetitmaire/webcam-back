@@ -9,8 +9,6 @@ import { Archive } from './../../components/archives/archive';
  */
 module.exports = (app: express.Application) => {
     app.get('/api/archives/:date', (req: express.Request, res: express.Response) => {
-
-        console.log('LA') 
  
         const date = moment(req.params.date, 'DD-MM-YYYY');      
         console.log(date.get('year'), date.get('month'), date.get('date'))    
@@ -25,7 +23,7 @@ module.exports = (app: express.Application) => {
             res.status(400).json(response);
         }
 
-        const archiveManager = new ArchiveManager({ startPath: './../test_snaps/', date: date });
+        const archiveManager = new ArchiveManager({ date: date });
         archiveManager.getFilesDescription().then((retour: Archive.fileDescription[]) => {
  
             const response: apiResponse = {
