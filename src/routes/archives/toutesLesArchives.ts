@@ -27,11 +27,11 @@ module.exports = (app: express.Application) => {
                 let message = '';
 
                 if(req.query.year && !req.query.month && !req.query.day)
-                    message = `${retour.length} dossier(s) ont été trouvé pour l'année ${req.query.year}.`;
+                    message = `${retour.length} dossier(s) ont été trouvé sur la période ${req.query.year}.`;
                 else if(req.query.year && req.query.month && !req.query.day)
-                    message = `${retour.length} dossier(s) ont été trouvé pour l'année ${req.query.year} et le mois ${req.query.month}`;
-                else if(req.query.year && req.query.month && !req.query.day)
-                    message = `${retour.length} dossier(s) ont été trouvé pour l'année ${req.query.year}, le mois ${req.query.month} et le jour ${req.query.day}.`;
+                    message = `${retour.length} dossier(s) ont été trouvé sur la période ${req.query.month}/${req.query.year}.`;
+                else if(req.query.year && req.query.month && req.query.day)
+                    message = `${retour.length} dossier(s) ont été trouvé sur la période ${req.query.day}/${req.query.month}/${req.query.year}.`;
 
                 const response: apiResponse = {
                     message: message, 

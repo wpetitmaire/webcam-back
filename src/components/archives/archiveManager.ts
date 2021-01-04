@@ -1,27 +1,22 @@
 import { Archive } from './archive';
-import moment from 'moment';
-import fs from 'fs-extra';
-import { type } from 'os';
+import fs, { stat } from 'fs-extra';
+import path from 'path';
 
 const excludedNames = ['.DS_Store', 'lastsnap.jpg'];
 const enum typesOfSearching { all, year, month, day };
 class ArchiveManager {
 
     private readonly startPath = './../test_snaps';
-    private debugMode = true; 
     private startPoint = typesOfSearching.all;
     private year!: number | undefined;
     private month!: number | undefined;
     private day!: number | undefined;
 
     constructor(parameters?: Archive.initConfiguration) {
-
-        this.log("-->CONSTRUCTEUR")
         
         if(!parameters)
             return;
 
-        this.debugMode = parameters.debugMode || false;
         this.year = parameters.year;
         this.month = parameters.month;
         this.day = parameters.day;
@@ -34,19 +29,10 @@ class ArchiveManager {
             this.startPoint = typesOfSearching.year;
     };
 
-    log(message: string): void {
-
-        if(!this.debugMode)
-            return;
-             
-        console.log(`(archiveManager) - ${message}`);
-    }
-
     /**
      * Construit le chemin ou récupérer les éléments des archives
      */
     private getPathToSearch(): string {
-        this.log("getPathToSearch")
 
         switch(this.startPoint) {
 
@@ -87,17 +73,13 @@ class ArchiveManager {
      * Renvoie la description des éléments présents dans le dossier
      */
     getFilesDescription(): Promise<Archive.fileDescription[]> {
-        this.log(`getFilesDescription : ${this.startPath}`);
  
         let pathToSearch = this.getPathToSearch();
-
-        console.log(pathToSearch)
 
         // Création d'une promesse qui effectue toutes les recherches
         return new Promise((sucess, fail) => {
 
             // Tester l'existence de l'arborescence 
-            // console.log('--> TEST EXISTENCE') 
             fs.pathExists(pathToSearch).then(exists => { 
 
                 // On rompt la promesse si l'arboresence n'existe pas
@@ -112,7 +94,7 @@ class ArchiveManager {
 
                     // S'il y a une erreur, on rompt la promesse avec le contenu de l'erreur.
                     if(err) {
-                        fail(err);
+                        fail(err.message);
                         return;
                     }
 
@@ -138,7 +120,7 @@ class ArchiveManager {
 
                                     // Si erreur, on rompt la promesse avec le contenu de l'erreur
                                     if(err) {
-                                        fail(err);
+                                        fail(err.message);
                                         return;
                                     }
             
@@ -146,7 +128,8 @@ class ArchiveManager {
                                     const data: Archive.fileDescription = {
                                         name: stats.isFile() == true ? `${file.substring(0,2)}:${file.substring(2,4)}:${file.substring(4,6)}` : file,
                                         isFile: stats.isFile(),
-                                        date: stats.birthtime
+                                        date: stats.birthtime,
+                                        absolutePath: path.resolve(pathToSearch, file)
                                     };
                 
                                     // On ressoud la promesse avec le contenu de l'objet fraichement créé.
