@@ -1,64 +1,42 @@
+import { log } from 'console';
 import express from 'express';
-import moment from 'moment';
 import { ArchiveManager } from '../../components/archives/archiveManager';
 import { apiResponse } from '../routes';
 import { Archive } from './../../components/archives/archive';
 
 /**
- * Récupération de la liste des captures
+ * Récupérer la liste des archives (toutes, sur une année, un mois ou une journée)
  */
 module.exports = (app: express.Application) => {
     app.get('/api/archives', (req: express.Request, res: express.Response) => {
 
-        // Filtre sur l'année
-        if(req.query.year) {
+        const apiParams: Archive.initConfiguration = {
+            year: (req.query.year) ? parseInt(<string>req.query.year) : undefined,
+            month: (req.query.month) ? parseInt(<string>req.query.month) : undefined,
+            day: (req.query.day) ? parseInt(<string>req.query.day) : undefined,
+        };
 
-            const apiParams: Archive.initConfiguration = {
-                year: parseInt(<string>req.query.year),
-                month: (req.query.month) ? parseInt(<string>req.query.month) : undefined,
-                day: (req.query.day) ? parseInt(<string>req.query.day) : undefined,
-            }
+        log(apiParams)
 
-            console.log(apiParams)
+        const archiveManager = new ArchiveManager(apiParams);
 
-            const archiveManager = new ArchiveManager(apiParams);
-            archiveManager.getFilesDescription().then((retour: Archive.fileDescription[]) => {
+        archiveManager.getDataDescription().then( data => {
      
-                let message = '';
+            let message = '';
 
-                if(req.query.year && !req.query.month && !req.query.day)
-                    message = `${retour.length} dossier(s) ont été trouvé sur la période ${req.query.year}.`;
-                else if(req.query.year && req.query.month && !req.query.day)
-                    message = `${retour.length} dossier(s) ont été trouvé sur la période ${req.query.month}/${req.query.year}.`;
-                else if(req.query.year && req.query.month && req.query.day)
-                    message = `${retour.length} dossier(s) ont été trouvé sur la période ${req.query.day}/${req.query.month}/${req.query.year}.`;
+            if(req.query.year && !req.query.month && !req.query.day)
+                message = `${data.length} mois archivé(s) pour l'année ${req.query.year}.`;
+            else if(req.query.year && req.query.month && !req.query.day)
+                message = `${data.length} jour(s) archivé(s) pour le mois ${req.query.month} de l'année ${req.query.year}.`;
+            else if(req.query.year && req.query.month && req.query.day)
+                message = `${data.length} archives trouvées au ${req.query.day}/${req.query.month}/${req.query.year}.`;
+            else
+                message = `${data.length} année(s) archivée(s).`;
 
-                const response: apiResponse = {
-                    message: message, 
-                    data: retour
-                };
-                res.json(response); 
-            }).catch(erreur => { 
-                res.status(500).json({ message: erreur })
-            }); 
-        }
-        // Recherche sans filtre
-        else {
-
-            const archiveManager = new ArchiveManager();
-            archiveManager.getFilesDescription().then((retour: Archive.fileDescription[]) => {
-     
-                const response: apiResponse = {
-                    message: `${retour.length} élément(s) ont été trouvé(s)`, 
-                    data: retour
-                };
-                res.json(response); 
-            }).catch(erreur => {
-                console.log(erreur);
-                res.status(500).json({ message: erreur })
-            }); 
-        }
-
-    
+            const response: apiResponse = { message, data };
+            res.json(response); 
+        }).catch(erreur => { 
+            res.status(500).json({ message: erreur })
+        }); 
     });
 }; 

@@ -19,7 +19,7 @@ export namespace Archive {
     interface fileDescription {
         name: string,
         isFile: boolean,
-        date: Date,
+        date: moment.Moment,
         absolutePath: string,
     }
 }
