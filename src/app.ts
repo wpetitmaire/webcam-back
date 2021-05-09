@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 
 const app = express();
-const port = 3000;
+const port = 3030;
 
 app
     .use(cors())
@@ -12,7 +12,6 @@ app
     .use(bodyParser.json());
 
 // Ici nous placerons nos futurs points de terminaison.
-require('./routes/archives/capturesPourUnDossier')(app);
 require('./routes/archives/toutesLesArchives')(app); 
 
 app.listen(port, () => console.log(`Notre application Node est démarrée sur : http://localhost:${port}`)); 
