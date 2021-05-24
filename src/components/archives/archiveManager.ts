@@ -133,7 +133,7 @@ class ArchiveManager {
                     const stringDate = [...rowElement.querySelectorAll('td')][2].innerHTML;
                     const date = moment(stringDate, 'YYYY-MM-DD HH:mm');
                     const absolutePath = this.getPathToSearch() + rowElement.querySelector('a')?.innerHTML;
-                    const name = moment(stringDate, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY'); 
+                    const name = isFile ? moment(stringDate, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY') : rowElement.querySelector('a')?.innerHTML.split('/')[0] || ""; 
 
                     dataList.push({ name, isFile, date, absolutePath });
                 })
