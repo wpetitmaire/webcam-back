@@ -128,11 +128,12 @@ class ArchiveManager {
 
                 result.forEach(rowElement => {
 
-                    const name = rowElement.querySelector('a')?.innerHTML.split('/')[0] || "";
+                    // const name = rowElement.querySelector('a')?.innerHTML.split('/')[0] || "";
                     const isFile = rowElement.querySelector('img[alt="[DIR]"]') === null;
                     const stringDate = [...rowElement.querySelectorAll('td')][2].innerHTML;
                     const date = moment(stringDate, 'YYYY-MM-DD HH:mm');
                     const absolutePath = this.getPathToSearch() + rowElement.querySelector('a')?.innerHTML;
+                    const name = moment(stringDate, 'YYYY-MM-DD HH:mm').format('DD/MM/YYYY'); 
 
                     dataList.push({ name, isFile, date, absolutePath });
                 })
