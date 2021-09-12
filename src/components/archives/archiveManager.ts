@@ -11,6 +11,7 @@ const enum typesOfSearching { all, year, month, day };
 class ArchiveManager {
 
     private readonly startPath = `http://${config.get('webcam.host')}:${config.get('webcam.archives.port')}${config.get('webcam.archives.basePath')}` ;
+    private readonly miniaturesStartPath = `http://${config.get('webcam.host')}:${config.get('webcam.archives.port')}${config.get('webcam.archives.miniaturesPath')}` ;
     private startPoint = typesOfSearching.all;
     private year!: number | undefined;
     private month!: number | undefined;
@@ -133,9 +134,11 @@ class ArchiveManager {
                     const stringDate = [...rowElement.querySelectorAll('td')][2].innerHTML;
                     const date = moment(stringDate, 'YYYY-MM-DD HH:mm');
                     const absolutePath = this.getPathToSearch() + rowElement.querySelector('a')?.innerHTML;
-                    const name = isFile ? moment(stringDate, 'YYYY-MM-DD HH:mm').format('HH[h] mm[min]') : rowElement.querySelector('a')?.innerHTML.split('/')[0] || ""; 
+                    const name = isFile ? date.format('HH[h] mm[min]') : rowElement.querySelector('a')?.innerHTML.split('/')[0] || ""; 
+                    const strDate = date.format('YYYY/MM/DD')
+                    const miniaturePath = `${this.miniaturesStartPath}/${strDate}/${rowElement.querySelector('a')?.innerHTML}`
 
-                    dataList.push({ name, isFile, date, absolutePath });
+                    dataList.push({ name, isFile, date, absolutePath, miniaturePath });
                 })
 
                 success(dataList);

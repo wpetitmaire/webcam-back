@@ -21,5 +21,6 @@ export namespace Archive {
         isFile: boolean,
         date: moment.Moment,
         absolutePath: string,
+        miniaturePath?: string
     }
 }

@@ -7,7 +7,8 @@
         "archives": {
             "ExternalSearch": true,
             "port": "18080",
-            "basePath": "/webcam/pictures/intervalSnapshots"
+            "basePath": "/webcam/snapshots/captures",
+            "miniaturesPath": "/webcam/snapshots/miniatures"
         }
     }
 }
